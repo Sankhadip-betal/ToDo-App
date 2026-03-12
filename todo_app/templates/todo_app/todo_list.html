@@ -1,0 +1,54 @@
+<!-- todo_list/todo_app/templates/todo_app/todo_list.html -->
+<!-- todo_list/todo_app/templates/todo_app/todo_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <div>
+        <p><a href="{% url "index" %}">Back to Lists</a></p>
+        <div>
+            <h3>Edit list:</h3>
+            <h5>{{ todo_list.title | upper }}</h5>
+        </div>
+        <ul>
+            {% for todo in object_list %}
+            <li style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <span>
+                        <form method="post" action="{% url "item-toggle" todo_list.id todo.id %}" style="display: inline;">
+                {% csrf_token %}
+                <input type="checkbox" {% if todo.completed %}checked{% endif %} onchange="this.form.submit()">
+                </form>
+                        {{ todo.title }}
+                        (Due {{ todo.due_date | date:"l, F j"}})
+                </span>
+                    <input
+                        value="Edit"
+                        type="button"
+                        onclick="location.href='{% url "item-update" todo_list.id todo.id %}'"
+                    />  
+                     <input
+                        value="Delete"
+                        type="button"
+                        onclick="location.href='{% url "item-delete" todo_list.id todo.id %}'">
+            </div>
+            </li>
+            {% empty %}
+            <p>There are no to-do items in this list.</p>
+            {% endfor %}
+        </ul>
+        <p>
+            <input
+                value="Add a new item"
+                type="button"
+                onclick="location.href='{% url "item-add" todo_list.id %}'"
+            />
+             <input
+                value="Delete this list"
+                type="button"
+                onclick="location.href=
+                '{% url "list-delete" todo_list.id %}'" />
+        </p>
+    </div>
+</div>
+{% endblock %}
